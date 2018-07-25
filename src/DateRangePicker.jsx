@@ -36,6 +36,7 @@ const DateRangePicker = createClass({
     className: PropTypes.string,
     dateStates: PropTypes.array, // an array of date ranges and their states
     defaultState: PropTypes.string,
+    fullDayStates: React.PropTypes.bool,
     disableNavigation: PropTypes.bool,
     firstOfWeek: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
     helpMessage: PropTypes.string,
@@ -71,6 +72,7 @@ const DateRangePicker = createClass({
       className: '',
       numberOfCalendars: 1,
       firstOfWeek: 0,
+      fullDayStates: false,
       disableNavigation: false,
       nextLabel: '',
       previousLabel: '',
@@ -161,6 +163,7 @@ const DateRangePicker = createClass({
     let maxDate = absoluteMaximum;
     let dateCursor = moment(minDate).startOf('day');
 
+    let shiftDays = this.props.fullDayStates ? 1 : 0;
     let defs = Immutable.fromJS(stateDefinitions);
 
     dateStates.forEach(function(s) {
@@ -172,8 +175,8 @@ const DateRangePicker = createClass({
         actualStates.push({
           state: defaultState,
           range: moment.range(
-            dateCursor,
-            start
+            moment(dateCursor).add(shiftDays, 'day'),
+            moment(start).subtract(shiftDays, 'day')
           ),
         });
       }
@@ -184,7 +187,7 @@ const DateRangePicker = createClass({
     actualStates.push({
       state: defaultState,
       range: moment.range(
-        dateCursor,
+        moment(dateCursor).add(shiftDays, 'day'),
         maxDate
       ),
     });
@@ -223,6 +226,13 @@ const DateRangePicker = createClass({
      * which direction to work
      */
     let blockedRanges = this.nonSelectableStateRanges().map(r => r.get('range'));
+
+    if (this.props.fullDayStates)
++        // range.intersect() ignores when one range ends on the same day
++        // the other begins; for the block to work, we have to extend the
++        // ranges by one day.
++        blockedRanges = blockedRanges.map(r => {
++            r = r.clone(); r.start.subtract(1, 'day'); r.end.add(1, 'day'); return r; })
     let intersect;
 
     if (forwards) {
@@ -458,6 +468,7 @@ const DateRangePicker = createClass({
       bemBlock,
       bemNamespace,
       firstOfWeek,
+      fullDayStates,
       numberOfCalendars,
       selectionType,
       value,
@@ -504,6 +515,7 @@ const DateRangePicker = createClass({
       dateStates,
       enabledRange,
       firstOfWeek,
+      fullDayStates,
       hideSelection,
       highlightedDate,
       highlightedRange,
