@@ -83,7 +83,7 @@ var DateRangePicker = (0, _createReactClass2.default)({
     className: _propTypes2.default.string,
     dateStates: _propTypes2.default.array, // an array of date ranges and their states
     defaultState: _propTypes2.default.string,
-    fullDayStates: _react2.default.PropTypes.bool,
+    fullDayStates: _propTypes2.default.bool,
     disableNavigation: _propTypes2.default.bool,
     firstOfWeek: _propTypes2.default.oneOf([0, 1, 2, 3, 4, 5, 6]),
     helpMessage: _propTypes2.default.string,

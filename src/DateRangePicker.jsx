@@ -36,7 +36,7 @@ const DateRangePicker = createClass({
     className: PropTypes.string,
     dateStates: PropTypes.array, // an array of date ranges and their states
     defaultState: PropTypes.string,
-    fullDayStates: React.PropTypes.bool,
+    fullDayStates: PropTypes.bool,
     disableNavigation: PropTypes.bool,
     firstOfWeek: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
     helpMessage: PropTypes.string,
